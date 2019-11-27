@@ -3,23 +3,16 @@
 
 extern crate cortex_m_rt;
 extern crate cortex_m;
-extern crate panic_halt;
 extern crate stm32l4;
+extern crate panic_halt;
 
 use cortex_m_rt::{entry, exception};
 use stm32l4::stm32l4x6;
 
-
-/// Set up PLL to 168MHz from 16MHz HSI
+/// Set up RCC
 fn rcc_init(peripherals: &mut stm32l4x6::Peripherals) {
     let rcc = &peripherals.RCC;
-	
-    // Reset all peripherals
-	
-    // Ensure HSI is on and stable
-    rcc.cr.modify(|_, w| w.hsion().set_bit());
-    while rcc.cr.read().hsion().bit_is_clear() {}
-	
+
     // Set up peripheral clocks
     rcc.ahb2enr.modify(|_, w|
         w.gpioaen().set_bit()
@@ -38,23 +31,23 @@ fn systick_init(syst: &mut stm32l4x6::SYST) {
 /// Set up gpio
 fn gpio_init(peripherals: &mut stm32l4x6::Peripherals) {
     let gpioa = &peripherals.GPIOA;
-	
+
     //LED
     gpioa.moder.modify(|_, w| w.moder5().output());
     gpioa.odr.modify(|_, w| w.odr5().clear_bit());
 }
 
-/// 
+///
 fn led_positive(peripherals: &mut stm32l4x6::Peripherals) {
     let gpioa = &peripherals.GPIOA;
-	
+
     gpioa.odr.modify(|_, w| w.odr5().set_bit());
 }
 
-/// 
+///
 fn led_negative(peripherals: &mut stm32l4x6::Peripherals) {
     let gpioa = &peripherals.GPIOA;
-	
+
     gpioa.odr.modify(|_, w| w.odr5().clear_bit());
 }
 
