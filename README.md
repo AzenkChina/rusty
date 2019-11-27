@@ -1,2 +1,3 @@
 # rusty
-rust embedded
+
+Just for learning the rust programming language.

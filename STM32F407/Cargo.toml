@@ -1,0 +1,22 @@
+[package]
+name = "firmware"
+version = "0.1.0"
+authors = ["azenk"]
+
+[dependencies]
+cortex-m = "0.5.8"
+cortex-m-rt = "0.6.10"
+panic-halt = "0.2.0"
+
+[dependencies.stm32f4]
+version = "0.4.0"
+features = ["stm32f407", "rt"]
+
+[profile.dev]
+debug = true
+incremental = false
+
+[profile.release]
+debug = false
+lto = true
+incremental = false
