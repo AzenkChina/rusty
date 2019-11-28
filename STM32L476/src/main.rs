@@ -4,10 +4,14 @@
 extern crate cortex_m_rt;
 extern crate cortex_m;
 extern crate stm32l4;
-extern crate panic_halt;
+//extern crate panic_halt;
+extern crate cortex_m_semihosting;
+extern crate panic_semihosting;
 
 use cortex_m_rt::{entry, exception};
 use stm32l4::stm32l4x6;
+use cortex_m_semihosting::hprintln;
+
 
 /// Set up RCC
 fn rcc_init(peripherals: &mut stm32l4x6::Peripherals) {
@@ -59,6 +63,8 @@ fn main() -> ! {
     rcc_init(&mut peripherals);
 	gpio_init(&mut peripherals);
     systick_init(&mut core.SYST);
+
+	hprintln!("Hello, World!").unwrap();
 
     loop {
 		cortex_m::asm::wfi();
