@@ -6,6 +6,11 @@
 mod hello;
 use hello::hello_external;
 
+#[link(name = "greet", kind = "static")]
+extern {
+	fn greet();
+}
+
 fn main() {
 
 	{
@@ -104,7 +109,7 @@ fn main() {
 			print!("x: {}", x);
 			x += 1;
 		}
-		
+
 		print!("\n");
 	}
 
@@ -129,6 +134,59 @@ fn main() {
 
 		println!("The multiply is {}", c.multiply());
 	}
+
+	{
+		let mut f : fn() = hello_internal;
+
+		f();
+
+		f = func_none;
+
+		f();
+	}
+
+	{
+		let f = Functions{none:func_none, input:func_input, output:func_output};
+
+		(f.none)();
+		(f.input)(3);
+		(f.output)();
+	}
+
+	{
+		const F : Functions = Functions{none:func_none, input:func_input, output:func_output};
+
+		(F.none)();
+		(F.input)(3);
+		(F.output)();
+	}
+	
+	{
+		static F : Functions = Functions{none:func_none, input:func_input, output:func_output};
+
+		(F.none)();
+		(F.input)(3);
+		(F.output)();
+	}
+
+	{
+		static mut F : Functions = Functions{none:func_none, input:func_input, output:func_output};
+
+		unsafe {(F.none)();}
+		unsafe {(F.input)(3);}
+		unsafe {(F.output)();}
+
+		unsafe {F.none = hello_internal;}
+
+		unsafe {(F.none)();}
+	}
+
+	{
+		println!("Call a C function: ");
+		unsafe {greet();}
+	}
+
+
 
 	// loop {
 		// println!("Hello, world!");
@@ -165,4 +223,25 @@ impl Complex {
         self.z = vx * vy;
 		self.z
     }
+}
+
+
+fn func_none() {
+	println!("Function None");
+}
+
+fn func_input(v :u32) {
+	println!("Function Input {}", v);
+}
+
+fn func_output() -> u32 {
+	let v = 8;
+	println!("Function Output {}", v);
+	v
+}
+
+struct Functions {
+	none	:fn(),
+	input	:fn(v :u32),
+	output	:fn() -> u32,
 }
