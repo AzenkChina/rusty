@@ -4,12 +4,13 @@
 extern crate cortex_m_rt;
 extern crate cortex_m;
 extern crate stm32l4;
-//extern crate panic_halt;
+extern crate panic_halt;
+#[cfg(debug_assertions)]
 extern crate cortex_m_semihosting;
-extern crate panic_semihosting;
 
 use cortex_m_rt::{entry, exception};
 use stm32l4::stm32l4x6;
+#[cfg(debug_assertions)]
 use cortex_m_semihosting::hprintln;
 
 
@@ -64,6 +65,7 @@ fn main() -> ! {
 	gpio_init(&mut peripherals);
     systick_init(&mut core.SYST);
 
+#[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
 
     loop {
@@ -81,10 +83,10 @@ fn SysTick() {
 
 #[exception]
 fn HardFault(ef: &cortex_m_rt::ExceptionFrame) -> ! {
-    panic!("HardFault at {:#?}", ef);
+	panic!("HardFault at {:#?}", ef);
 }
 
 #[exception]
 fn DefaultHandler(irqn: i16) {
-    panic!("Unhandled exception (IRQn = {})", irqn);
+	panic!("Unhandled exception (IRQn = {})", irqn);
 }
