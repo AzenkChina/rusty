@@ -14,9 +14,29 @@ use stm32l4::stm32l4x6;
 use cortex_m_semihosting::hprintln;
 
 
+#[link(name = "greet", kind = "static")]
+extern {
+	fn greet() -> u32;
+}
+
+
 /// Set up RCC
 fn rcc_init(peripherals: &mut stm32l4x6::Peripherals) {
     let rcc = &peripherals.RCC;
+	
+    // Reset all peripherals
+    rcc.ahb1rstr.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.ahb1rstr.write(|w| unsafe { w.bits(0)});
+    rcc.ahb2rstr.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.ahb2rstr.write(|w| unsafe { w.bits(0)});
+    rcc.ahb3rstr.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.ahb3rstr.write(|w| unsafe { w.bits(0)});
+    rcc.apb1rstr1.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.apb1rstr1.write(|w| unsafe { w.bits(0)});
+    rcc.apb1rstr2.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.apb1rstr2.write(|w| unsafe { w.bits(0)});
+    rcc.apb2rstr.write(|w| unsafe { w.bits(0xFFFF_FFFF) });
+    rcc.apb2rstr.write(|w| unsafe { w.bits(0)});
 
     // Set up peripheral clocks
     rcc.ahb2enr.modify(|_, w|
@@ -64,6 +84,12 @@ fn main() -> ! {
     rcc_init(&mut peripherals);
 	gpio_init(&mut peripherals);
     systick_init(&mut core.SYST);
+
+#[cfg(debug_assertions)]
+	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
+
+#[cfg(debug_assertions)]
+	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
 
 #[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
