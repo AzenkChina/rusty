@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(non_camel_case_types)]
 
 extern crate cortex_m_rt;
 extern crate cortex_m;
@@ -13,10 +14,18 @@ use stm32l4::stm32l4x6;
 #[cfg(debug_assertions)]
 use cortex_m_semihosting::hprintln;
 
+#[repr(C)]
+struct __led
+{
+	init: extern fn(),
+	suspend: extern fn(),
+	on: extern fn(),
+	off: extern fn(),
+}
 
-#[link(name = "greet", kind = "static")]
+#[link(name = "led", kind = "static")]
 extern {
-	fn greet() -> u32;
+	static led: __led;
 }
 
 
@@ -86,13 +95,12 @@ fn main() -> ! {
     systick_init(&mut core.SYST);
 
 #[cfg(debug_assertions)]
-	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
-
-#[cfg(debug_assertions)]
-	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
-
-#[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
+	
+	unsafe { (led.init)(); }
+	unsafe { (led.on)(); }
+	unsafe { (led.off)(); }
+	unsafe { (led.suspend)(); }
 
     loop {
 		cortex_m::asm::wfi();

@@ -1,10 +1,9 @@
 CROSS    = arm-none-eabi-
-CP       = busybox cp
-OBJ      = greet.o
-LINKOBJ  = greet.o
+OBJ      = led.o
+LINKOBJ  = led.o
 LIBS     = 
 INCS     = 
-BIN      = libgreet.a
+BIN      = libled.a
 CFLAGS   = $(INCS) -march=armv7e-m
 RM       = rm -f
 
@@ -19,8 +18,5 @@ $(BIN): $(LINKOBJ)
 	$(CROSS)ar r $(BIN) $(LINKOBJ)
 	$(CROSS)ranlib $(BIN)
 
-all-after:
-	$(CP) $(BIN) ../
-
-greet.o: greet.c
-	$(CROSS)gcc -c greet.c -o greet.o	$(CFLAGS)
+led.o: led.c
+	$(CROSS)gcc -c led.c -o led.o	$(CFLAGS)
