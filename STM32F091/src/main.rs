@@ -14,9 +14,10 @@ use stm32f0::stm32f0x1;
 use cortex_m_semihosting::hprintln;
 
 
-#[link(name = "greet", kind = "static")]
+#[link(name = "devices", kind = "static")]
 extern {
-	fn greet() -> u32;
+	fn udelay(v: u16);
+	fn mdelay(v: u16);
 }
 
 
@@ -66,10 +67,12 @@ fn main() -> ! {
     systick_init(&mut core.SYST);
 
 #[cfg(debug_assertions)]
-	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
+	hprintln!("Call C function.").unwrap();
+	unsafe{ udelay(100); }
 
 #[cfg(debug_assertions)]
-	hprintln!("Call C function, value is {}.", unsafe {greet()}).unwrap();
+	hprintln!("Call C function.").unwrap();
+	unsafe{ mdelay(100); }
 
 #[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
