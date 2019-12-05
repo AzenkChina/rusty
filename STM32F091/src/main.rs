@@ -17,9 +17,12 @@ fn main() -> ! {
 #[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
 
-	devices::msdelay(100);
+	devices::pinit();
+
+	devices::usdelay(100);
 
     loop {
-		devices::usdelay(1000);
+		devices::msdelay(100);
+		devices::pstatus();
 	}
 }

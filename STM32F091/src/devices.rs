@@ -6,6 +6,13 @@ extern crate panic_halt;
 use cortex_m_rt::exception;
 use stm32f0::stm32f0x1::interrupt;
 
+#[repr(C)]
+struct __power
+{
+	init: extern fn(),
+	status: extern fn() -> u8,
+	alter: extern fn(val: u8) -> u8,
+}
 
 #[link(name = "devices", kind = "static")]
 extern {
@@ -17,6 +24,7 @@ extern {
 	fn USART1_IRQHandler();
 	fn udelay(val:u16);
 	fn mdelay(val:u16);
+	static power: __power;
 }
 
 pub fn usdelay(val:u16) {
@@ -25,6 +33,14 @@ pub fn usdelay(val:u16) {
 
 pub fn msdelay(val:u16) {
 	unsafe{ mdelay(val); }
+}
+
+pub fn pinit() {
+	unsafe{ (power.init)(); }
+}
+
+pub fn pstatus() -> u8 {
+	unsafe{ (power.status)() }
 }
 
 #[exception]
