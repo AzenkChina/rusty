@@ -21,8 +21,18 @@ fn main() -> ! {
 
 	devices::usdelay(100);
 
+	devices::rledinit(0x03);
+	devices::wledinit(0x03);
+
     loop {
-		devices::msdelay(100);
+		devices::msdelay(10);
 		devices::pstatus();
+		devices::rledset(0x01);
+		devices::wledset(0xff);
+
+		devices::msdelay(10);
+		devices::pstatus();
+		devices::rledset(0xff);
+		devices::wledset(0x01);
 	}
 }
