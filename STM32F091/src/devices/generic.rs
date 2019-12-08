@@ -6,32 +6,8 @@ extern crate panic_halt;
 use cortex_m_rt::exception;
 use stm32f0::stm32f0x1::interrupt;
 
-#[repr(C)]
-struct __device_ctrl
-{
-	name: *const u8,
-	status: extern fn() -> u8,
-	init: extern fn(val: u8) ->u8,
-	suspend: extern fn(),
-}
-
-#[repr(C)]
-struct __led
-{
-	control: __device_ctrl,
-	get: extern fn() -> u8,
-	set: extern fn(val: u8) -> u8,
-}
-
-#[repr(C)]
-struct __power
-{
-	init: extern fn(),
-	status: extern fn() -> u8,
-	alter: extern fn(val: u8) -> u8,
-}
-
 #[link(name = "devices", kind = "static")]
+
 extern {
 	fn SVC_Handler();
 	fn PendSV_Handler();
@@ -39,42 +15,6 @@ extern {
 	fn RTC_IRQHandler();
 	fn USART3_8_IRQHandler();
 	fn USART1_IRQHandler();
-	fn udelay(val:u16);
-	fn mdelay(val:u16);
-	static power: __power;
-	static led:[__led; 2];
-}
-
-pub fn usdelay(val: u16) {
-	unsafe{ udelay(val); }
-}
-
-pub fn msdelay(val: u16) {
-	unsafe{ mdelay(val); }
-}
-
-pub fn pinit() {
-	unsafe{ (power.init)(); }
-}
-
-pub fn pstatus() -> u8 {
-	unsafe{ (power.status)() }
-}
-
-pub fn rledinit(val: u8) {
-	unsafe{ (led[0].control.init)(val); }
-}
-
-pub fn rledset(val: u8) -> u8 {
-	unsafe{ (led[0].set)(val) }
-}
-
-pub fn wledinit(val: u8) {
-	unsafe{ (led[1].control.init)(val); }
-}
-
-pub fn wledset(val: u8) -> u8 {
-	unsafe{ (led[1].set)(val) }
 }
 
 #[exception]

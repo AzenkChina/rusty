@@ -17,22 +17,22 @@ fn main() -> ! {
 #[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
 
-	devices::pinit();
+	devices::delay::millisecond(100);
 
-	devices::usdelay(100);
+	devices::power::init();
 
-	devices::rledinit(0x03);
-	devices::wledinit(0x03);
+	devices::cpu::core::init(devices::cpu::core::__level::NORMAL);
 
     loop {
-		devices::msdelay(10);
-		devices::pstatus();
-		devices::rledset(0x01);
-		devices::wledset(0xff);
+		devices::delay::millisecond(1000);
+		devices::cpu::watchdog::feed();
 
-		devices::msdelay(10);
-		devices::pstatus();
-		devices::rledset(0xff);
-		devices::wledset(0x01);
+		let status = devices::power::status();
+
+#[cfg(debug_assertions)]
+		match status {
+			devices::power::__status::AC => hprintln!("AC mode!").unwrap(),
+			_ => hprintln!("BATTERY mode!").unwrap(),
+		}
 	}
 }
