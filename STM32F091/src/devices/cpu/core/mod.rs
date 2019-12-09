@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types)]
+#![allow(dead_code)]
 
 #[repr(C)]
 struct __core {
@@ -16,8 +17,8 @@ struct __interrupt {
 	disable: extern fn(),
 	enable: extern fn(),
 	status: extern fn() -> u8,
-	request: extern fn(),
-	release: extern fn(),
+	request: extern fn(n: u8, cb: extern fn()) -> u8,
+	release: extern fn(n: u8) -> u8,
 }
 
 #[repr(C)]

@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types)]
+#![allow(dead_code)]
 
 #[repr(C)]
 struct __core {
@@ -16,8 +17,8 @@ struct __interrupt {
 	disable: extern fn(),
 	enable: extern fn(),
 	status: extern fn() -> u8,
-	request: extern fn(),
-	release: extern fn(),
+	request: extern fn(n: u8, cb: extern fn()) -> u8,
+	release: extern fn(n: u8) -> u8,
 }
 
 #[repr(C)]
@@ -58,5 +59,27 @@ pub fn status() -> __status {
     match val {
         0x00 => __status::DISABLED,
         _ => __status::ENABLED,
+    }
+}
+
+pub fn request(n: u8, cb: extern fn()) -> bool {
+	let val: u8;
+
+	unsafe { val = (cpu.interrupt.request)(n, cb); }
+
+    match val {
+        0x00 => false,
+        _ => true,
+    }
+}
+
+pub fn release(n: u8) -> bool {
+	let val: u8;
+
+	unsafe { val = (cpu.interrupt.release)(n); }
+
+    match val {
+        0x00 => false,
+        _ => true,
     }
 }
