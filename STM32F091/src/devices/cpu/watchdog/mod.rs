@@ -43,5 +43,5 @@ pub fn overflow() -> u32 {
 }
 
 pub fn feed() {
-	unsafe { (cpu.watchdog.feed)() }
+	unsafe { (cpu.watchdog.feed)(); }
 }

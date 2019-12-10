@@ -44,17 +44,17 @@ pub enum __status {
 }
 
 pub fn disable() {
-	unsafe { (cpu.interrupt.disable)() }
+	unsafe { (cpu.interrupt.disable)(); }
 }
 
 pub fn enable() {
-	unsafe { (cpu.interrupt.enable)() }
+	unsafe { (cpu.interrupt.enable)(); }
 }
 
 pub fn status() -> __status {
 	let val: u8;
 
-	unsafe { val = (cpu.interrupt.status)() }
+	unsafe { val = (cpu.interrupt.status)(); }
 
     match val {
         0x00 => __status::DISABLED,

@@ -48,13 +48,13 @@ pub fn alter(val: __status)  -> __status {
 	let result: u8;
 
     match val {
-		__status::AC => unsafe { result = (power.alter)(0x00) },
-		__status::DC => unsafe { result = (power.alter)(0x01) },
-		__status::AUX => unsafe { result = (power.alter)(0x02) },
-		__status::BATTERY => unsafe { result = (power.alter)(0x03) },
-		__status::WAKEUP => unsafe { result = (power.alter)(0x04) },
-		__status::REBOOT => unsafe { result = (power.alter)(0xf3) },
-		__status::RESET => unsafe { result = (power.alter)(0xfc) },
+		__status::AC => unsafe { result = (power.alter)(0x00); },
+		__status::DC => unsafe { result = (power.alter)(0x01); },
+		__status::AUX => unsafe { result = (power.alter)(0x02); },
+		__status::BATTERY => unsafe { result = (power.alter)(0x03); },
+		__status::WAKEUP => unsafe { result = (power.alter)(0x04); },
+		__status::REBOOT => unsafe { result = (power.alter)(0xf3); },
+		__status::RESET => unsafe { result = (power.alter)(0xfc); },
     }
 
     match result {

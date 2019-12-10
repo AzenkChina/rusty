@@ -52,7 +52,7 @@ pub enum __level {
 pub fn endian() -> __endian {
 	let val: u8;
 
-	unsafe { val = (cpu.core.endian)() }
+	unsafe { val = (cpu.core.endian)(); }
 
     match val {
         0x55 => __endian::LITTLE_ENDIAN,
@@ -63,8 +63,8 @@ pub fn endian() -> __endian {
 
 pub fn init(val: __level) {
     match val {
-        __level::NORMAL => unsafe { (cpu.core.init)(0x00) },
-        __level::POWERSAVE => unsafe { (cpu.core.init)(0x01) },
+        __level::NORMAL => unsafe { (cpu.core.init)(0x00); },
+        __level::POWERSAVE => unsafe { (cpu.core.init)(0x01); },
     }
 }
 

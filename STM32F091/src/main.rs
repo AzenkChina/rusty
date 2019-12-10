@@ -11,27 +11,38 @@ use cortex_m_rt::entry;
 use cortex_m_semihosting::hprintln;
 
 mod devices;
+use devices::{*};
 
 #[entry]
 fn main() -> ! {
 #[cfg(debug_assertions)]
 	hprintln!("Hello, World!").unwrap();
 
-	devices::delay::millisecond(100);
+	delay::millisecond(100);
 
-	devices::power::init();
+	power::init();
 
-	devices::cpu::core::init(devices::cpu::core::__level::NORMAL);
+	cpu::core::init(cpu::core::__level::NORMAL);
+
+	led::relay::init(led::relay::__dev_state::NORMAL);
+	led::warning::init(led::warning::__dev_state::NORMAL);
 
     loop {
-		devices::delay::millisecond(1000);
-		devices::cpu::watchdog::feed();
+		cpu::watchdog::feed();
+		delay::millisecond(1000);
+		led::relay::set(led::relay::__status::ON);
+		led::warning::set(led::warning::__status::OFF);
 
-		let status = devices::power::status();
+		cpu::watchdog::feed();
+		delay::millisecond(1000);
+		led::relay::set(led::relay::__status::OFF);
+		led::warning::set(led::warning::__status::ON);
 
 #[cfg(debug_assertions)]
+		let status = power::status();
+#[cfg(debug_assertions)]
 		match status {
-			devices::power::__status::AC => hprintln!("AC mode!").unwrap(),
+			power::__status::AC => hprintln!("AC mode!").unwrap(),
 			_ => hprintln!("BATTERY mode!").unwrap(),
 		}
 	}
